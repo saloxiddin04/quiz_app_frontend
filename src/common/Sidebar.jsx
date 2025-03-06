@@ -4,7 +4,7 @@ import {NavLink, useLocation} from "react-router-dom";
 import {getUserData} from "../auth/jwtService";
 import {FaBook, FaUserAlt} from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
-import {AiOutlineDown, AiOutlineUp} from "react-icons/ai";
+import {AiFillPlusSquare, AiOutlineDown, AiOutlineUp} from "react-icons/ai";
 import {toggleSidebar} from "../redux/LocalStorageSlice/LocalStorageSlice.js";
 
 const Sidebar = () => {
@@ -21,7 +21,8 @@ const Sidebar = () => {
 			title: "Test",
 			icon: <TbClipboardList className="mt-1" size="20" />,
 			children: [
-				{ title: 'Tests', path: "/main", icon: <TbLetterQ className="mt-1" size="20"/> },
+				{ title: 'Tests', path: "/tests", icon: <TbLetterQ className="mt-1" size="20"/> },
+				{ title: 'Create Test', path: "/create-test/:id", icon: <AiFillPlusSquare className="mt-1" size="20"/> },
 			]
 		},
 	]
@@ -92,6 +93,15 @@ const Sidebar = () => {
 										)}
 									</li>
 								))}
+
+								<NavLink
+									activeclassname="active"
+									to={"/main"}
+									className="flex w-full items-center gap-5 py-2.5 px-4 rounded-r transition duration-200 hover:bg-primary/10"
+								>
+									<TbLetterQ className="mt-1" size="20"/>
+									<span>Main</span>
+								</NavLink>
 								
 								{/* Independent Links */}
 								<NavLink
@@ -127,7 +137,7 @@ const Sidebar = () => {
 										className="flex w-[90%] items-center gap-5 py-2.5 px-4 rounded-r transition duration-200 hover:bg-primary/10"
 									>
 										<TbLetterQ className="mt-1" size="20"/>
-										<span>Tests</span>
+										<span>Main</span>
 									</NavLink>
 								</li>
 							</ul>
