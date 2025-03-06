@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
-import AppRoutes from "../../front/src/Routes/Routes.jsx";
+import AppRoutes from "./Routes/Routes.jsx";
 
 // components
-import Navbar from "../../front/src/common/Navbar";
-import Sidebar from "../../front/src/common/Sidebar";
+import Navbar from "./common/Navbar";
+import Sidebar from "./common/Sidebar";
 
-import SignIn from "../../front/src/pages/Auth/SignIn";
-import SignUp from "../../front/src/pages/Auth/SignUp";
+import SignIn from "./pages/Auth/SignIn";
+import SignUp from "./pages/Auth/SignUp";
 import { getUserData } from "./auth/jwtService.js";
 
 import { ToastContainer } from "react-toastify";

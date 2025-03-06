@@ -72,7 +72,8 @@ const Navbar = () => {
 						<button className="text-primary">
 							<FaUserAlt size="20" />
 						</button>
-						<div className="tooltip hidden sm:block">
+						{/*<div className="tooltip hidden sm:block">*/}
+						<div className="tooltip hidden">
 							<div className="shadow-md bg-white py-2 w-full rounded">
 								<Link
 									to={"/profile"}
