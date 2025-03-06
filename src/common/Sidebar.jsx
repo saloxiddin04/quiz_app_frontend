@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {TbClipboardList, TbLetterQ} from "react-icons/tb";
 import {NavLink, useLocation} from "react-router-dom";
 import {getUserData} from "../auth/jwtService";
-import {FaUserAlt} from "react-icons/fa";
+import {FaBook, FaUserAlt} from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
 import {AiOutlineDown, AiOutlineUp} from "react-icons/ai";
 import {toggleSidebar} from "../redux/LocalStorageSlice/LocalStorageSlice.js";
@@ -102,6 +102,16 @@ const Sidebar = () => {
 								>
 									<FaUserAlt size="22" className="mt-1"/>
 									<span>Users</span>
+								</NavLink>
+
+								<NavLink
+									onClick={handleCleanCurrentPage}
+									activeclassname="active"
+									to={"/create-subject"}
+									className="flex w-full items-center gap-5 py-2.5 px-4 rounded-r transition duration-200 hover:bg-primary/10"
+								>
+									<FaBook size="22" className="mt-1"/>
+									<span>Create subject</span>
 								</NavLink>
 							</ul>
 						</nav>

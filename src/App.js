@@ -13,6 +13,7 @@ import { getUserData } from "./auth/jwtService.js";
 
 import { ToastContainer } from "react-toastify";
 import {useSelector} from "react-redux";
+import LoadingPage from "./components/LoadingPage";
 
 
 function App() {
@@ -54,7 +55,7 @@ function App() {
     }
   }, [navigate, pathname]);
   
-  if (isLoading) return "Loading..."
+  if (isLoading) return <LoadingPage />
   
   return (
     <div>
