@@ -1,0 +1,81 @@
+.multicolor-bar {
+	margin: 20px 20%;
+}
+
+.multicolor-bar .values .value {
+	float: left;
+	text-align: center;
+}
+
+.multicolor-bar .scale .graduation {
+	float: left;
+	text-align: center;
+}
+
+.multicolor-bar .bars .bar {
+	float: left;
+	height: 10px;
+}
+
+.multicolor-bar .bars div.bar:first-of-type {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.multicolor-bar .bars div.bar:last-of-type {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+.multicolor-bar .legends {
+	text-align: center;
+}
+
+
+.multicolor-bar .legends .legend {
+	display: inline-block;
+	margin: 0 5px;
+	text-align: center;
+}
+
+.multicolor-bar .legends .legend .dot {
+	font-size: 25px;
+	vertical-align: middle;
+}
+
+.multicolor-bar .legends .legend .label {
+	margin-left: 2px;
+	vertical-align: middle;
+}
+
+.question th, .question td {
+	padding: 5px;
+	border: 1px solid #000000 !important;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.loading-spinner {
+	border: 4px solid rgba(0, 0, 0, 0.5);
+	border-left: 4px solid #fff;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	animation: spin 1s linear infinite;
+}
+
+.test {
+	scrollbar-width: none;
+}
+
+.test::-webkit-scrollbar {
+	display: none;
+}
+
+/*.ranking {*/
+/*	background: url("../images/ranking.png") center center / contain no-repeat;*/
+/*}*/
