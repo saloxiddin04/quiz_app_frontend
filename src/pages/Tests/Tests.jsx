@@ -47,8 +47,7 @@ const Tests = () => {
         <div className={'flex items-center gap-5 flex-col lg:flex-row'}>
           <button
             className="btn-primary mt-1 inline-block text-sm lg:text-lg"
-            onClick={() => {
-            }}
+            onClick={() => navigate("/create-test/:id")}
           >
             Create Test
           </button>
