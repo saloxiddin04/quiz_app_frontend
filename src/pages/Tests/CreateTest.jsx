@@ -131,9 +131,6 @@ const CreateTest = () => {
     }
   }
 
-  console.log(data?.options?.map(el => el?.answer))
-  console.log(data)
-
   return (
     <form className="card" onSubmit={saveData}>
       <div className="my-5 flex flex-wrap lg:flex-nowrap items-start gap-5">
