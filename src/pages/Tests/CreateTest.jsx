@@ -6,6 +6,9 @@ import Select from "react-select";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {getSubjects} from "../../redux/subjectsSlice/subjectsSlice";
+import {options} from "axios";
+import {createTest} from "../../redux/testSlice/testSlice";
+import {toast} from "react-toastify";
 
 const CreateTest = () => {
   const navigate = useNavigate();
@@ -24,6 +27,11 @@ const CreateTest = () => {
   const [showRequired, setShowRequired] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const [imageName, setImageName] = useState("")
+  const [imageName2, setImageName2] = useState("");
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [isUploaded2, setIsUploaded2] = useState(false);
+
   // variables
   const variants = [
     { value: "a", label: "A" },
@@ -37,18 +45,14 @@ const CreateTest = () => {
   ];
 
   const [data, setData] = useState({
-    id: null,
-    modul_id: null,
-    sistema_id: null,
+    subject: "",
+    correctAnswerImage: "",
     image: '',
-    image2: '',
-    image3: '',
-    question: "",
-    correct_answer: "",
+    text: "",
+    correctAnswer: "",
     correct_answer_key: "",
     options: [{ key: "", answer: "" }],
-    modul_name: "",
-    modul_unique_name: "",
+    explanation: ""
   });
 
   const handleSelectChange = (selectedOption, index) => {
@@ -73,10 +77,65 @@ const CreateTest = () => {
     setData({ ...data, options: newFormData });
   };
 
+  // image upload
+  const uploadImage = ({ target: { files } }) => {
+    setImageName(files[0].name);
+    setIsUploaded(true);
+    setData({ ...data, image: files[0] });
+  };
+
+  const uploadCorrectImage = ({ target: { files } }) => {
+    setImageName2(files[0].name);
+    setIsUploaded2(true);
+    setData({ ...data, correctAnswerImg: files[0] });
+  };
+
+  const saveData = (e) => {
+    e.preventDefault()
+    if (
+      data.text &&
+      data.options &&
+      data.subject &&
+      data.correctAnswer
+    ) {
+      if (isSubmitted) return;
+      const newFormData = [...data.options];
+      setData({ ...data, options: newFormData });
+
+      const formData = new FormData()
+      formData.append("subject", data.subject)
+      formData.append("text", data.text)
+      formData.append("correctAnswer", data.correctAnswer)
+      formData.append("options", JSON.stringify(data.options))
+      formData.append("image", data.image)
+      formData.append("correctAnswerImg", data.correctAnswerImage)
+      formData.append("explanation", data.explanation)
+
+      if (Number(id)) {
+        // dispatch(updateTest(formData)).then(() => {
+        //   navigate("/module-test");
+        // });
+        // setShowRequired(false);
+      } else {
+        dispatch(createTest(formData)).then(({payload}) => {
+          if (payload?._id) {
+            toast.success("Test created successfully")
+            navigate("/tests");
+          }
+        });
+        setShowRequired(false);
+      }
+      setIsSubmitted(true);
+    } else {
+      setShowRequired(true);
+    }
+  }
+
+  console.log(data?.options?.map(el => el?.answer))
   console.log(data)
 
   return (
-    <form className="card">
+    <form className="card" onSubmit={saveData}>
       <div className="my-5 flex flex-wrap lg:flex-nowrap items-start gap-5">
         <div className="w-full lg:w-1/2">
           <div className='flex items-center flex-wrap lg:flex-nowrap gap-5'>
@@ -124,7 +183,7 @@ const CreateTest = () => {
                   </p>
                 </label>
                 <label className="w-10/12 lg:w-9/12">
-                  Answer
+                  Option
                   <input
                     type="text"
                     className="form-input"
@@ -165,9 +224,9 @@ const CreateTest = () => {
           <JoditEditor
             className="mt-1 mb-3"
             ref={editor}
-            value={data.question}
+            value={data.text}
             onChange={(newContent) => {
-              setData({...data, question: newContent});
+              setData({...data, text: newContent});
             }}
           />
 
@@ -184,14 +243,14 @@ const CreateTest = () => {
               type="file"
               className="form-file-input"
               accept={'image/png, image/jpeg, image/jpg, image/svg'}
-              // onChange={uploadSecondImage}
+              onChange={uploadImage}
             />
             <div
               className={'bg-red-500 rounded flex items-center px-2 py-1 cursor-pointer'}
               onClick={() => {
-                // setImageName2('');
-                // setIsUploaded2(false);
-                // setData({...data, image2: id ? 'delete' : ''});
+                setImageName('');
+                setIsUploaded(false);
+                setData({...data, image: id ? 'delete' : ''});
               }}
             >
               <IoIosTrash size={30} color={'#fff'}/>
@@ -199,7 +258,7 @@ const CreateTest = () => {
           </div>
 
           <span className="bg-primary text-white py-1 px-3 mt-2 inline-block rounded">
-            {/*{(imageName2 === 'delete' || imageName2 === '' || imageName2 === null) ? 'No photo' : imageName2}*/}
+            {(imageName === 'delete' || imageName === '' || imageName === null) ? 'No photo' : imageName}
           </span>
         </div>
       </div>
@@ -220,7 +279,7 @@ const CreateTest = () => {
                   label: data.correct_answer_key.toUpperCase(),
                 }}
                 onChange={(e) =>
-                  setData({...data, correct_answer_key: e.value})
+                  setData({...data, correct_answer_key: e.value, correctAnswer: data?.options?.find(el => el?.key === e?.value)?.answer})
                 }
               />
               <p className="text-danger">
@@ -231,7 +290,7 @@ const CreateTest = () => {
             </label>
 
             <label htmlFor="fileUpload" className="mt-3 inline-block">
-              Image
+              Correct Answer Image
             </label>
             <div className={'flex items-center gap-2'}>
               <input
@@ -239,14 +298,14 @@ const CreateTest = () => {
                 type="file"
                 accept={'image/png, image/jpeg, image/jpg, image/svg'}
                 className="form-file-input"
-                // onChange={uploadImage}
+                onChange={uploadCorrectImage}
               />
               <div
                 className={'bg-red-500 rounded flex items-center px-2 py-1 cursor-pointer'}
                 onClick={() => {
-                  // setImageName('');
-                  // setIsUploaded(false);
-                  // setData({...data, image: id ? 'delete' : ''});
+                  setImageName2('');
+                  setIsUploaded2(false);
+                  setData({...data, correctAnswerImg: id ? 'delete' : ''});
                 }}
               >
                 <IoIosTrash size={30} color={'#fff'}/>
@@ -254,50 +313,21 @@ const CreateTest = () => {
             </div>
 
             <span className="bg-primary text-white py-1 px-3 mt-2 inline-block rounded">
-              {/*{(imageName === 'delete' || imageName === '' || imageName === null) ? 'No photo' : imageName}*/}
+              {(imageName2 === 'delete' || imageName2 === '' || imageName2 === null) ? 'No photo' : imageName2}
             </span>
-
-            <div className="mt-5">
-              <label htmlFor="fileUpload" className="inline-block">
-                Image 2
-              </label>
-              <div className={'flex items-center gap-2'}>
-                <input
-                  id="fileUpload"
-                  type="file"
-                  accept={'image/png, image/jpeg, image/jpg, image/svg'}
-                  className="form-file-input"
-                  // onChange={uploadThirdImage}
-                />
-                <div
-                  className={'bg-red-500 rounded flex items-center px-2 py-1 cursor-pointer'}
-                  onClick={() => {
-                    // setImageName3('');
-                    // setIsUploaded3(false);
-                    // setData({...data, image3: id ? 'delete' : ''});
-                  }}
-                >
-                  <IoIosTrash size={30} color={'#fff'}/>
-                </div>
-              </div>
-
-              <span className="bg-primary text-white py-1 px-3 mt-2 inline-block rounded">
-                {/*{(imageName3 === 'delete' || imageName3 === '' || imageName3 === null) ? 'No photo' : imageName3}*/}
-              </span>
-            </div>
           </div>
 
           <label className="relative z-10 w-full lg:w-11/12">
-            Answer
+            Explanation
             <JoditEditor
-              // ref={correctAnswerRef}
-              // value={data.correct_answer}
-              // onChange={(newContent) => {
-              //   setData({...data, correct_answer: newContent});
-              //}}
+              ref={correctAnswerRef}
+              value={data.explanation}
+              onChange={(newContent) => {
+                setData({...data, explanation: newContent});
+              }}
             />
             <p className="text-danger">
-              {/*{showRequired && !data.correct_answer ? "required field" : ""}*/}
+              {showRequired && !data.explanation ? "required field" : ""}
             </p>
           </label>
         </div>
