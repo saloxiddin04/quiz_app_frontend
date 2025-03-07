@@ -11,7 +11,7 @@ export const getAllTests = createAsyncThunk(
   "tests/getAllTests",
   async (params) => {
     try {
-      const response = await instance.get("/questions/")
+      const response = await instance.get("/questions/", {params})
       return response.data
     } catch (e) {
       return e;
