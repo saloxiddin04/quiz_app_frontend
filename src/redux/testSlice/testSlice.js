@@ -31,6 +31,18 @@ export const createTest = createAsyncThunk(
   }
 )
 
+export const deleteTest = createAsyncThunk(
+  "tests/deleteTest",
+  async (id) => {
+    try {
+      const response = await instance.delete(`/questions/${id}`)
+      return response.data
+    } catch (e) {
+      return e;
+    }
+  }
+)
+
 const testsSlice = createSlice({
   name: "tests",
   initialState,
@@ -57,6 +69,18 @@ const testsSlice = createSlice({
         state.loading = false
       })
       .addCase(createTest.rejected, (state) => {
+        state.loading = false
+      })
+
+    // deleteTest
+    builder
+      .addCase(deleteTest.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(deleteTest.fulfilled, (state, {payload}) => {
+        state.loading = false
+      })
+      .addCase(deleteTest.rejected, (state) => {
         state.loading = false
       })
   }

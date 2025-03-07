@@ -1,11 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
 import {AiFillDelete, AiFillEdit} from "react-icons/ai";
-import {getAllTests} from "../../redux/testSlice/testSlice";
+import {deleteTest, getAllTests} from "../../redux/testSlice/testSlice";
 import Pagination from "../../components/Pagination";
 import instance from "../../plugins/axios";
+import DeleteModal from "../../components/DeleteModal";
+import {toast} from "react-toastify";
 
 const Tests = () => {
   const dispatch = useDispatch()
@@ -13,12 +15,30 @@ const Tests = () => {
 
   const {loading, tests} = useSelector(state => state.test)
 
+  const [removeModal, setRemoveModal] = useState(false)
+  const [id, setId] = useState(null)
+
   useEffect(() => {
     dispatch(getAllTests({limit: 10, page: 1}))
   }, []);
 
   const handlePageChange = (page) => {
     dispatch(getAllTests({limit: 10, page}))
+  }
+
+  const closeRemoveModal = () => {
+    setId(null)
+    setRemoveModal(false)
+  }
+
+  const removeTest = () => {
+    return dispatch(deleteTest(id)).then(({payload}) => {
+      if (payload?.success) {
+        toast.success(payload?.message)
+        closeRemoveModal()
+        dispatch(getAllTests({limit: 10, page: 1}))
+      }
+    })
   }
 
   return (
@@ -152,7 +172,8 @@ const Tests = () => {
                         <button
                           className="btn-danger btn-sm ml-3"
                           onClick={() => {
-
+                            setId(item?._id)
+                            setRemoveModal(true)
                           }}
                         >
                           <AiFillDelete/>
@@ -167,6 +188,7 @@ const Tests = () => {
           </div>
         </div>
       </div>
+      <DeleteModal isModalOpen={removeModal} closeModal={closeRemoveModal} confirm={removeTest} />
     </div>
   );
 };
